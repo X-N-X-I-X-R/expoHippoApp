@@ -1,34 +1,33 @@
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootState, AppDispatch } from '../store';
-import { loginUser, RootStackParamList } from '../store/authSlice';
+import { registerUser, RootStackParamList } from '../store/authSlice';
 
-const LoginScreen = () => {
+const RegisterScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
 
   const dispatch = useDispatch<AppDispatch>();
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>(); 
   const { token, error } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (token) {
-      navigation.navigate('Userprofile');
+      navigation.navigate('Userprofile')
+
     }
   }, [token]);
 
-  const handleLogin = () => {
-    dispatch(loginUser({
-      username, password
-    }));
+  const handleRegister = () => {
+    dispatch(registerUser({ username, password, email }));
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Login</Text>
+      <Text style={styles.header}>Register</Text>
       <TextInput
         style={styles.input}
         placeholder="Username"
@@ -37,14 +36,20 @@ const LoginScreen = () => {
       />
       <TextInput
         style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        style={styles.input}
         placeholder="Password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
-     <Text>{error ? JSON.stringify(error) : null}</Text>
-      <Pressable style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+      {error && <Text style={styles.error}>{error}</Text>}
+      <Pressable style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Register</Text>
       </Pressable>
     </View>
   );
@@ -84,5 +89,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
-
+export default RegisterScreen;

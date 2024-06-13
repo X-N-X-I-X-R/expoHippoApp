@@ -1,0 +1,25 @@
+# tree_commands.txt
+
+## Display the structure of the current directory
+tree
+
+## Display the structure of a specific directory
+tree directory_name
+
+## Display the structure of multiple directories
+tree directory1 directory2
+
+## Output the directory structure to a file
+tree > output.txt
+
+## Limit the depth of the directory tree
+tree -L 2
+
+## Display the structure of a specific directory with limited depth
+tree -L 2 directory_name
+
+## Display the structure of a specific directory and output to a file
+tree directory_name > output.txt
+
+## Display the structure of a specific directory with limited depth and output to a file
+tree -L 2 directory_name > output.txt

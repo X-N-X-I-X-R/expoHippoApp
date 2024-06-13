@@ -1,30 +1,59 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, Button } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { setMessage } from '../store/introSlice';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type RootStackParamList = {
+  Intro: undefined;
+  Login: undefined;
+  Register: undefined;
+  Userprofile: undefined;
+};
+
+type NavigationProp = StackNavigationProp<RootStackParamList>;
+
+
 
 const IntroScreen = () => {
-  const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp>();
+
   const message = useSelector((state: RootState) => state.intro.message);
   const dispatch = useDispatch();
   const [showOptions, setShowOptions] = useState(false);
+  const scrollViewRef = useRef<ScrollView | null>(null);
+
+
+  
 
   const toggleOptions = () => {
     setShowOptions(!showOptions);
+    scrollDown();
   };
 
+  const scrollDown = () => {
+    scrollViewRef.current?.scrollTo({ y: 100 }); // replace 100 with the y-coordinate to which you want to scroll
+  };
+
+  const handlePress = () => {
+    dispatch(setMessage('Welcome to Hippoputamos!'));
+};
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.intro}>
+<ScrollView ref={scrollViewRef} contentContainerStyle={styles.container}>
+        <View style={styles.intro}>
         <Text style={styles.header}>Empower Your Investment Journey</Text>
         <Text style={styles.paragraph}>{message}</Text>
         <Text style={styles.paragraph}>Whether you're a seasoned investor or just starting out, we're here to guide you through the maze of market volatility with confidence and expertise.</Text>
         <Text style={styles.paragraph}>Join us and discover how you can turn market unpredictability into opportunity.</Text>
-        <Image source={require('../assets/hippo.jpeg')} style={styles.img} />
-        <Button title="Sign Up Now!" onPress={toggleOptions} />
-        <Button title="Sign In" onPress={() => navigation.navigate('Login')} />
+        <Image source={require('../assets/hippo.jpeg')} style={styles.img} resizeMode="contain" />
+        <Pressable style={styles.button} onPress={toggleOptions}>
+          <Text style={styles.buttonText}>Sign Up Now!</Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.buttonText}>Sign In</Text>
+        </Pressable>
         <Text style={styles.textDecoder}>We are Hippoputamos!</Text>
       </View>
       {showOptions && (
@@ -46,7 +75,9 @@ const IntroScreen = () => {
             <Text style={styles.sectionText}>Personalized investment advice</Text>
             <Text style={styles.sectionText}>Access to our expert analysts</Text>
             <Text style={styles.sectionText}>Exclusive investment opportunities</Text>
-            <Button title="Sign Up" onPress={() => navigation.navigate('Register')} />
+            <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
+              <Text style={styles.buttonText}>Sign Up</Text>
+            </Pressable>
           </View>
           <View style={styles.hr} />
           <View style={styles.section}>
@@ -56,7 +87,9 @@ const IntroScreen = () => {
             <Text style={styles.sectionText}>Stock market fundamentals</Text>
             <Text style={styles.sectionText}>Options trading strategies</Text>
             <Text style={styles.sectionText}>Real estate investing</Text>
-            <Button title="Sign Up" onPress={() => navigation.navigate('Register')} />
+            <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
+              <Text style={styles.buttonText}>Sign Up</Text>
+            </Pressable>
           </View>
           <View style={styles.hr} />
           <View style={styles.section}>
@@ -66,7 +99,9 @@ const IntroScreen = () => {
             <Text style={styles.sectionText}>Chart patterns</Text>
             <Text style={styles.sectionText}>Technical indicators</Text>
             <Text style={styles.sectionText}>Candlestick analysis</Text>
-            <Button title="Sign Up" onPress={() => navigation.navigate('Register')} />
+            <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
+              <Text style={styles.buttonText}>Sign Up</Text>
+            </Pressable>
           </View>
         </View>
       )}
@@ -74,16 +109,15 @@ const IntroScreen = () => {
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
     backgroundColor: 'black',
-    color: 'white',
   },
   intro: {
     marginBottom: 20,
-    color: 'white',
   },
   header: {
     fontSize: 24,
@@ -117,7 +151,6 @@ const styles = StyleSheet.create({
   img: {
     width: '100%',
     height: 200,
-    resizeMode: 'contain',
     marginBottom: 20,
   },
   hr: {
@@ -138,6 +171,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontFamily: 'monospace',
+  },
+  button: {
+    backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 
